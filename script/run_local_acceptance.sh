@@ -5,13 +5,15 @@ set -o pipefail
 port=8080
 url="http://localhost:$port"
 
-go build
-./pratter --port $port &
-id=$!
+pushd cmd > /dev/null
+	go build
+	./cmd --port $port &
+	id=$!
+popd > /dev/null
 
-pushd acceptance
+pushd acceptance > /dev/null
 	go test --url "$url" || true
-popd
+popd > /dev/null
 
 #Kill web server
 kill -9 "$id"
