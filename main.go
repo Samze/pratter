@@ -21,9 +21,12 @@ func main() {
 
 func startServer(port int) {
 	address := fmt.Sprintf("127.0.0.1:%d", port)
-	handler := getRouter()
+	router := getRouter()
+
+	addMessageHandlers(router)
+
 	srv := &http.Server{
-		Handler:      handler,
+		Handler:      router,
 		Addr:         address,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -32,18 +35,19 @@ func startServer(port int) {
 	log.Fatal(srv.ListenAndServe())
 }
 
-func getRouter() http.Handler {
+func getRouter() *mux.Router {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
 		res.WriteHeader(http.StatusOK)
 	})
+	return r
+}
 
+func addMessageHandlers(r *mux.Router) {
 	store := messages.NewMessageStore()
 	addHandler := messages.AddHandler{&store}
 	listHandler := messages.ListHandler{&store}
 	r.Handle("/users/{user}/message", &addHandler).Methods("POST")
 	r.Handle("/users/{user}/message", &listHandler).Methods("GET")
-
-	return r
 }
