@@ -1,18 +1,23 @@
 package messages
 
-type MessageStore struct {
-	messages map[string][]message
+type MessageStore interface {
+	AddMessage(user string, msg Message)
+	GetMessages(user string) []Message
 }
 
-func NewMessageStore() MessageStore {
-	messages := make(map[string][]message)
-	return MessageStore{messages}
+type MemoryMessageStore struct {
+	messages map[string][]Message
 }
 
-func (s *MessageStore) addMessage(user string, msg message) {
+func NewMemoryMessageStore() MemoryMessageStore {
+	messages := make(map[string][]Message)
+	return MemoryMessageStore{messages}
+}
+
+func (s *MemoryMessageStore) AddMessage(user string, msg Message) {
 	s.messages[user] = append(s.messages[user], msg)
 }
 
-func (s *MessageStore) getMessages(user string) []message {
+func (s *MemoryMessageStore) GetMessages(user string) []Message {
 	return s.messages[user]
 }

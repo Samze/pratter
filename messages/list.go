@@ -8,14 +8,14 @@ import (
 )
 
 type ListHandler struct {
-	Store *MessageStore
+	Store MessageStore
 }
 
 func (h *ListHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	user := vars["user"]
 
-	userMessages := h.Store.getMessages(user)
+	userMessages := h.Store.GetMessages(user)
 
 	if err := json.NewEncoder(w).Encode(&userMessages); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -8,13 +8,13 @@ import (
 )
 
 type AddHandler struct {
-	Store *MessageStore
+	Store MessageStore
 }
 
 func (h *AddHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	user := vars["user"]
-	var msg message
+	var msg Message
 
 	if r.Body == nil {
 		http.Error(w, "Bad request", http.StatusBadRequest)
@@ -25,5 +25,5 @@ func (h *AddHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	h.Store.addMessage(user, msg)
+	h.Store.AddMessage(user, msg)
 }
